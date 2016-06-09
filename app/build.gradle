@@ -24,4 +24,10 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile project(':ROXIMITY_SDK')
+
+    compile 'org.slf4j:slf4j-api:1.7.10'
+    compile 'com.google.android.gms:play-services-base:8.4.0'
+    compile 'com.google.android.gms:play-services-gcm:8.4.0'
+    compile 'com.google.android.gms:play-services-location:8.4.0'
+    compile 'com.loopj.android:android-async-http:1.4.9'
 }
