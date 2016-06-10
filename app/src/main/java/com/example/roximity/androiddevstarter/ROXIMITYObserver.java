@@ -4,9 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -14,12 +11,11 @@ import com.roximity.sdk.ROXIMITYEngine;
 import com.roximity.sdk.ROXIMITYEngineListener;
 import com.roximity.sdk.external.ROXConsts;
 import com.roximity.sdk.messages.ROXEventInfo;
-import com.roximity.sdk.messages.ROXIMITYAction;
-import com.roximity.sdk.messages.ROXIMITYSignal;
 import com.roximity.system.exceptions.GooglePlayServicesMissingException;
 import com.roximity.system.exceptions.IncorrectContextException;
 import com.roximity.system.exceptions.MissingApplicationIdException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -30,13 +26,22 @@ public class ROXIMITYObserver implements ROXIMITYEngineListener {
 
     private static final String TAG = "ROXObserver";
 
-    public ROXIMITYObserver(Context context) throws GooglePlayServicesMissingException, IncorrectContextException, MissingApplicationIdException {
+    public ArrayList<ROXEventInfo> eventHistory = new ArrayList<>();
+    private ArrayList<ROXEventUpdateListener> eventListeners = new ArrayList<>();
 
+    public ROXIMITYObserver(Context context) throws GooglePlayServicesMissingException, IncorrectContextException, MissingApplicationIdException {
         startROXIMITYEngine(context);
         registerDeviceHookEvent(context);
-
     }
 
+    public boolean addEventUpdateListener(ROXEventUpdateListener updateListener){
+        if (this.eventListeners.contains(updateListener)){
+            return false;
+        }
+
+        this.eventListeners.add(updateListener);
+        return true;
+    }
 
     private void startROXIMITYEngine(Context context) throws GooglePlayServicesMissingException, IncorrectContextException, MissingApplicationIdException {
         HashMap<String,Object> roximityOptions = new HashMap<>();
@@ -66,22 +71,17 @@ public class ROXIMITYObserver implements ROXIMITYEngineListener {
             }
         };
         LocalBroadcastManager.getInstance(context).registerReceiver(deviceHookReceiver,intentFilter);
-
     }
 
     private void receivedDeviceHook(Intent intent){
         ROXEventInfo eventInfo = (ROXEventInfo) intent.getSerializableExtra(ROXConsts.EXTRA_EVENT_DATA);
-        ROXIMITYAction action = eventInfo.getROXIMITYAction();
-        ROXIMITYSignal signal = eventInfo.getROXIMITYSignal();
-        Log.d("ROXSignal", signal.getId());
-        Log.d("ROXSignal", signal.getName());
-        Log.d("ROXSignal", String.valueOf(signal.getType()));
-        Log.d("ROXSignal", String.valueOf(signal.getTags()));
+        this.eventHistory.add(eventInfo);
+        notifyListenersOfEventHisoryUpdate();
+    }
 
-        Log.d("ROXAction", action.getId());
-        Log.d("ROXAction", action.getName());
-        Log.d("ROXAction", action.getMessage());
-        Log.d("ROXAction", String.valueOf(action.getPresentationType()));
-        Log.d("ROXAction", String.valueOf(action.getTags()));
+    private void notifyListenersOfEventHisoryUpdate(){
+        for (ROXEventUpdateListener updateListener : this.eventListeners){
+            updateListener.eventsDidUpdate();
+        }
     }
 }

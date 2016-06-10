@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:shrinkColumns="2"
+    android:stretchColumns="2">
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Timestamp"
+            android:id="@+id/tvTimestamp"
+            android:layout_gravity="right"
+            android:layout_column="2" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="NAME:   "
+            android:id="@+id/nameLabel"
+            android:layout_column="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event Name"
+            android:id="@+id/tvEventName"
+            android:layout_column="2" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines = "10"
+            android:minLines="1"
+            android:text="SIGNAL:   "
+            android:id="@+id/signalLabel"
+            android:layout_column="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvSignalName"
+            android:text="Signal Name"
+            android:typeface="normal"
+            android:maxLines = "10"
+            android:minLines="1"
+            android:layout_column="2" />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EVENT TYPE:    "
+            android:id="@+id/tvEventTypeLabel"
+            android:maxLines = "10"
+            android:minLines="1"
+            android:layout_column="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTriggerEvent"
+            android:text="Trigger Event"
+            android:typeface="normal"
+            android:layout_gravity="left"
+            android:maxLines = "10"
+            android:minLines="1"
+            android:layout_column="2" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ACTION STYLE:   "
+            android:id="@+id/tvActionStyleLabel"
+            android:maxLines = "10"
+            android:minLines="1"
+            android:layout_column="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Presentation Type"
+            android:id="@+id/tvPresentationType"
+            android:maxLines = "10"
+            android:minLines="1"
+            android:layout_column="2" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MESSAGE:   "
+            android:id="@+id/tvMessageLabel"
+            android:maxLines = "10"
+            android:minLines="1"
+            android:layout_column="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Message"
+            android:id="@+id/tvMessage"
+            android:maxLines = "10"
+            android:minLines="1"
+            android:layout_column="2" />
+    </TableRow>
+
+</TableLayout>
