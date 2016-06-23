@@ -2,6 +2,7 @@ package com.example.roximity.androiddevstarter;
 
 import android.content.Context;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +80,7 @@ public class ROXIMITYEventAdapter extends ArrayAdapter<ROXEventInfo> {
             tvEventMessage.setText(action.getMessage());
             tvMessageLabel.setText("MESSAGE:   ");
         }
-
+        
         //SETTING THE TIMESTAMP OF THE EVENT
         String timestampString = convertDate(result.getTimestamp(), "MM/dd/yy hh:mm:ss");
         tvTimestamp.setText(timestampString);

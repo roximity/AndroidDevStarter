@@ -18,7 +18,7 @@
 
         <meta-data
             android:name="ROXIMITY_APPLICATION_ID"
-            android:value="[YOUR_APP_ID]" />
+            android:value="5b64d0b806ea4c4bb3c5cd527305aa09" />
 
     </application>
 
