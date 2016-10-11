@@ -49,7 +49,7 @@ public class ROXIMITYObserver implements ROXIMITYEngineListener {
         roximityOptions.put(ROXConsts.ENGINE_OPTIONS_START_LIMIT_AD_TARGETING, false);
         roximityOptions.put(ROXConsts.ENGINE_OPTIONS_START_LOCATION_DEACTIVATED, false);
 
-        ROXIMITYEngine.startEngineWithOptions(context,"[YOUR APP ID]", roximityOptions,this);
+        ROXIMITYEngine.startEngineWithOptions(context,"YOUR-APP-ID", roximityOptions,this);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class ROXIMITYObserver implements ROXIMITYEngineListener {
                 receivedDeviceHook(intent);
             }
         };
-        context.registerReceiver(deviceHookReceiver,intentFilter);
+        LocalBroadcastManager.getInstance(context).registerReceiver(deviceHookReceiver,intentFilter);
     }
 
     private void receivedDeviceHook(Intent intent){

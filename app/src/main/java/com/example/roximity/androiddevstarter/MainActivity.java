@@ -1,5 +1,6 @@
 package com.example.roximity.androiddevstarter;
 
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements ROXEventUpdateLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         //Setup the ROXIMITYEvent listener and ensure we have propper location permissions
         setupROXObserver();
         checkLocationPermission();
