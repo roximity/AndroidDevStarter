@@ -31,7 +31,7 @@ public class ROXIMITYObserver implements ROXIMITYEngineListener {
 
     public ROXIMITYObserver(Context context) throws GooglePlayServicesMissingException, IncorrectContextException, MissingApplicationIdException {
         startROXIMITYEngine(context);
-        registerDeviceHookEvent(context);
+        dynamicallyRegisterDeviceHookEvent(context);
     }
 
     public boolean addEventUpdateListener(ROXEventUpdateListener updateListener){
@@ -46,10 +46,10 @@ public class ROXIMITYObserver implements ROXIMITYEngineListener {
     private void startROXIMITYEngine(Context context) throws GooglePlayServicesMissingException, IncorrectContextException, MissingApplicationIdException {
         HashMap<String,Object> roximityOptions = new HashMap<>();
         roximityOptions.put(ROXConsts.ENGINE_OPTIONS_MUTE_BLUETOOTH_OFF_ALERT, false);
-        roximityOptions.put(ROXConsts.ENGINE_OPTIONS_MUTE_REQUEST_ALERTS, false);
+        roximityOptions.put(ROXConsts.ENGINE_OPTIONS_START_LIMIT_AD_TARGETING, false);
         roximityOptions.put(ROXConsts.ENGINE_OPTIONS_START_LOCATION_DEACTIVATED, false);
 
-        ROXIMITYEngine.startEngineWithOptions(context, R.drawable.ic_launcher, roximityOptions, this, null);
+        ROXIMITYEngine.startEngineWithOptions(context,"[YOUR APP ID]", roximityOptions,this);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ROXIMITYObserver implements ROXIMITYEngineListener {
         Log.d(TAG, "ROXIMITYEngine was stopped");
     }
 
-    private void registerDeviceHookEvent(Context context){
+    private void dynamicallyRegisterDeviceHookEvent(Context context){
         IntentFilter intentFilter = new IntentFilter(ROXConsts.ROXIMITY_EVENT_ACTION);
         BroadcastReceiver deviceHookReceiver = new BroadcastReceiver() {
             @Override
@@ -70,7 +70,7 @@ public class ROXIMITYObserver implements ROXIMITYEngineListener {
                 receivedDeviceHook(intent);
             }
         };
-        LocalBroadcastManager.getInstance(context).registerReceiver(deviceHookReceiver,intentFilter);
+        context.registerReceiver(deviceHookReceiver,intentFilter);
     }
 
     private void receivedDeviceHook(Intent intent){
