@@ -15,6 +15,7 @@ import com.roximity.system.exceptions.GooglePlayServicesMissingException;
 import com.roximity.system.exceptions.IncorrectContextException;
 import com.roximity.system.exceptions.MissingApplicationIdException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -24,6 +25,7 @@ import java.util.HashMap;
 public class ROXIMITYObserver implements ROXIMITYEngineListener {
 
 
+    public static final String EVENT_CACHE_KEY = "com.roximity.event-cache";
     private static final String TAG = "ROXObserver";
 
     public ArrayList<ROXEventInfo> eventHistory = new ArrayList<>();
@@ -32,15 +34,25 @@ public class ROXIMITYObserver implements ROXIMITYEngineListener {
     public ROXIMITYObserver(Context context) throws GooglePlayServicesMissingException, IncorrectContextException, MissingApplicationIdException {
         startROXIMITYEngine(context);
         dynamicallyRegisterDeviceHookEvent(context);
+        loadCachedEvents(context);
     }
 
     public boolean addEventUpdateListener(ROXEventUpdateListener updateListener){
         if (this.eventListeners.contains(updateListener)){
             return false;
         }
-
         this.eventListeners.add(updateListener);
         return true;
+    }
+
+    public void backupEventHistory(Context context){
+        if (this.eventHistory == null) return;
+
+        try {
+            InternalStorage.writeObject(context, ROXIMITYObserver.EVENT_CACHE_KEY, this.eventHistory);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void startROXIMITYEngine(Context context) throws GooglePlayServicesMissingException, IncorrectContextException, MissingApplicationIdException {
@@ -49,7 +61,7 @@ public class ROXIMITYObserver implements ROXIMITYEngineListener {
         roximityOptions.put(ROXConsts.ENGINE_OPTIONS_START_LIMIT_AD_TARGETING, false);
         roximityOptions.put(ROXConsts.ENGINE_OPTIONS_START_LOCATION_DEACTIVATED, false);
 
-        ROXIMITYEngine.startEngineWithOptions(context,"YOUR-APP-ID", roximityOptions,this);
+        ROXIMITYEngine.startEngineWithOptions(context,"[YOUR-APP-ID]", roximityOptions,this);
     }
 
     @Override
@@ -67,16 +79,28 @@ public class ROXIMITYObserver implements ROXIMITYEngineListener {
         BroadcastReceiver deviceHookReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                receivedDeviceHook(intent);
+                receivedDeviceHook(intent, context);
             }
         };
         LocalBroadcastManager.getInstance(context).registerReceiver(deviceHookReceiver,intentFilter);
     }
 
-    private void receivedDeviceHook(Intent intent){
+    private void receivedDeviceHook(Intent intent, Context context){
         ROXEventInfo eventInfo = (ROXEventInfo) intent.getSerializableExtra(ROXConsts.EXTRA_EVENT_DATA);
         this.eventHistory.add(eventInfo);
         notifyListenersOfEventHisoryUpdate();
+    }
+
+    private boolean loadCachedEvents(Context context){
+        try {
+            // Retrieve the list from internal storage
+            this.eventHistory = (ArrayList<ROXEventInfo>) InternalStorage.readObject(context, EVENT_CACHE_KEY);
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private void notifyListenersOfEventHisoryUpdate(){

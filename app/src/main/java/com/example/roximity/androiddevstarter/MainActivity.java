@@ -8,6 +8,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.roximity.sdk.ROXIMITYEngine;
@@ -16,6 +18,7 @@ import com.roximity.system.exceptions.GooglePlayServicesMissingException;
 import com.roximity.system.exceptions.IncorrectContextException;
 import com.roximity.system.exceptions.MissingApplicationIdException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,13 +35,37 @@ public class MainActivity extends AppCompatActivity implements ROXEventUpdateLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        //Setup the ROXIMITYEvent listener and ensure we have propper location permissions
+
         setupROXObserver();
         checkLocationPermission();
 
         //Setup the ListView for viewing ROXIMITYEvents
         setupEventHistoryListView();
+
+        ((Button) findViewById(R.id.clearCacheButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearCache();
+            }
+        });
     }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        //Setup the ROXIMITYEvent listener
+        if (this.roximityObserver == null){
+            setupROXObserver();
+        }
+
+        populateEventHistoryList(this.roximityObserver.eventHistory);
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.roximityObserver.backupEventHistory(this);
+    }
+
 
     @Override
     public void eventsDidUpdate() {
@@ -112,5 +139,15 @@ public class MainActivity extends AppCompatActivity implements ROXEventUpdateLis
             return 0;
         }
     };
+
+    private void clearCache(){
+        try {
+            InternalStorage.clearCache(this,ROXIMITYObserver.EVENT_CACHE_KEY);
+            this.roximityObserver.eventHistory = new ArrayList<ROXEventInfo>();
+            populateEventHistoryList(this.roximityObserver.eventHistory);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
