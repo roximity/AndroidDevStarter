@@ -1,2 +1,2 @@
 configurations.maybeCreate("default")
-artifacts.add("default", file('ROXIMITY_SDK_2_0_26.aar'))
+artifacts.add("default", file('ROXIMITY_SDK_2_0_37.aar'))
