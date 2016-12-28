@@ -3,10 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AndroidDevStarter.iml" filepath="$PROJECT_DIR$/AndroidDevStarter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/AndroidDevStarter.iml" filepath="$PROJECT_DIR$/AndroidDevStarter.iml" />
       <module fileurl="file://$PROJECT_DIR$/ROXIMITY_SDK/ROXIMITY_SDK.iml" filepath="$PROJECT_DIR$/ROXIMITY_SDK/ROXIMITY_SDK.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ROXIMITY_SDK/ROXIMITY_SDK.iml" filepath="$PROJECT_DIR$/ROXIMITY_SDK/ROXIMITY_SDK.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
