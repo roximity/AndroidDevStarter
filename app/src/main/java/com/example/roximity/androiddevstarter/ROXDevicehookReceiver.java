@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class ROXDevicehookReceiver extends BroadcastReceiver {
 
-    public static final String TAG = "ROXDevicehooReceiver";
+    public static final String TAG = "ROXDevicehookReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -32,11 +32,16 @@ public class ROXDevicehookReceiver extends BroadcastReceiver {
     private void updateEventCache(ROXEventInfo event, Context context){
         try {
             // Retrieve the list from internal storage
-            ArrayList<ROXEventInfo> cache = (ArrayList<ROXEventInfo>) InternalStorage.readObject(context, ROXIMITYObserver.EVENT_CACHE_KEY);
-            cache.add(event);
-            InternalStorage.writeObject(context,ROXIMITYObserver.EVENT_CACHE_KEY,cache);
-
-        } catch (IOException | ClassNotFoundException e) {
+            Object cachedObject = InternalStorage.readObject(context, ROXIMITYObserver.EVENT_CACHE_KEY);
+            if (cachedObject == null) cachedObject = new ArrayList<ROXEventInfo>();
+            try {
+                ArrayList<ROXEventInfo> cache = (ArrayList<ROXEventInfo>) cachedObject;
+                cache.add(event);
+                InternalStorage.writeObject(context,ROXIMITYObserver.EVENT_CACHE_KEY,cache);
+            }catch (ClassCastException e){
+                Log.d(TAG, "Couldn't retrieve cached events due to class casting exception");
+            }
+        } catch (NullPointerException | IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

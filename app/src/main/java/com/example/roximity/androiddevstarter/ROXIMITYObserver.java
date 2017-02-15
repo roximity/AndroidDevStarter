@@ -10,10 +10,15 @@ import android.util.Log;
 import com.roximity.sdk.ROXIMITYEngine;
 import com.roximity.sdk.ROXIMITYEngineListener;
 import com.roximity.sdk.external.ROXConsts;
+import com.roximity.sdk.messages.ActionPresentationType;
 import com.roximity.sdk.messages.ROXEventInfo;
+import com.roximity.sdk.messages.ROXIMITYAction;
+import com.roximity.sdk.messages.ROXIMITYDeviceSegment;
 import com.roximity.system.exceptions.GooglePlayServicesMissingException;
 import com.roximity.system.exceptions.IncorrectContextException;
 import com.roximity.system.exceptions.MissingApplicationIdException;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,7 +66,7 @@ public class ROXIMITYObserver implements ROXIMITYEngineListener {
         roximityOptions.put(ROXConsts.ENGINE_OPTIONS_START_LIMIT_AD_TARGETING, false);
         roximityOptions.put(ROXConsts.ENGINE_OPTIONS_START_LOCATION_DEACTIVATED, false);
 
-        ROXIMITYEngine.startEngineWithOptions(context,"[YOUR-APP-ID]", roximityOptions,this);
+        ROXIMITYEngine.startEngineWithOptions(context,"[YOUR APP ID HERE]", roximityOptions,this);
     }
 
     @Override
@@ -89,14 +94,21 @@ public class ROXIMITYObserver implements ROXIMITYEngineListener {
         ROXEventInfo eventInfo = (ROXEventInfo) intent.getSerializableExtra(ROXConsts.EXTRA_EVENT_DATA);
         this.eventHistory.add(eventInfo);
         notifyListenersOfEventHisoryUpdate();
+        printDeviceSegment(eventInfo);
+        printPlaceProperties(eventInfo);
     }
 
     private boolean loadCachedEvents(Context context){
         try {
             // Retrieve the list from internal storage
-            this.eventHistory = (ArrayList<ROXEventInfo>) InternalStorage.readObject(context, EVENT_CACHE_KEY);
+            Object cachedObject = InternalStorage.readObject(context, EVENT_CACHE_KEY);
+            if (cachedObject == null) return false;
+            try {
+                this.eventHistory = (ArrayList<ROXEventInfo>) cachedObject;
+            }catch (ClassCastException e){
+                Log.d(TAG, "Couldn't retrieve cached events due to class casting exception");
+            }
             return true;
-
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -107,5 +119,19 @@ public class ROXIMITYObserver implements ROXIMITYEngineListener {
         for (ROXEventUpdateListener updateListener : this.eventListeners){
             updateListener.eventsDidUpdate();
         }
+    }
+
+    private void printDeviceSegment(ROXEventInfo event){
+        ROXIMITYDeviceSegment segmentObj = event.getROXIMITYDeviceSegment();
+        JSONObject segmentDesc = segmentObj.getSegmentJSON();
+        if (segmentDesc != null) Log.d(TAG,"Device segment JSON: " + segmentDesc.toString());
+
+    }
+    private void printPlaceProperties(ROXEventInfo event){
+        ROXIMITYAction action = event.getROXIMITYAction();
+        if (action.getPresentationType() != ActionPresentationType.PLACE_VERIFIED) return;
+        JSONObject properties = action.getProperties();
+        if (properties != null) Log.d(TAG,"Place properties JSON: " + properties.toString());
+
     }
 }
